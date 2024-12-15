@@ -1,0 +1,104 @@
+# Configuración general de archivos temporales, logs y configuración del sistema operativo
+*.log
+*.temp
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+Thumbs.db
+
+# Archivos generados por Visual Studio y configuraciones de usuario
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.ide.*
+
+# Carpetas de compilación y salida
+bin/
+obj/
+out/
+artifacts/
+
+# Archivos generados por dependencias
+*.lock
+project.lock.json
+project.fragment.lock.json
+
+# Archivos de configuración de paquetes
+*.nuspec
+*.nupkg
+.packages/
+packages/
+.nuget/
+*.snupkg
+
+# Configuración de Rider/JetBrains
+.idea/
+*.DotSettings.user
+
+# Archivos generados por .NET
+*.dll
+*.exe
+*.pdb
+*.mdb
+*.ilk
+*.idb
+*.lib
+*.ndb
+*.o
+*.obj
+*.opt
+*.pch
+*.rsp
+*.tlb
+*.tli
+*.tmp
+*.tmp_proj
+*.log
+*.mdf
+*.ldf
+*.ipr
+*.iws
+
+# Archivos de publicación
+publish/
+publish_profiles/
+
+# Configuración de servidor local o herramientas de despliegue
+.env
+.env.*
+*.local.settings.json
+
+# Archivos generados por Kestrel y sistemas locales
+wwwroot/
+.kestrel/
+logs/
+
+# Configuración específica de Contenedores Docker
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+docker-compose*.yml
+.dockerignore
+
+# Archivos de Node.js si tu proyecto incluye front-end o herramientas JS
+node_modules/
+yarn.lock
+npm-debug.log*
+pnpm-debug.log*
+.vscode/
+.eslintcache
+*.eslintignore
+
+# Configuración de tests
+TestResults/
+*.coverage
+*.coveragexml
+coverage.*
+
+# Otros archivos opcionales
+_ReSharper.*
+*.resharper
+.idea/
