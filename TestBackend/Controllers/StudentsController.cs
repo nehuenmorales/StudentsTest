@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TestBackend.Context;
 using TestBackend.DTOs;
 using TestBackend.Entities;
+using TestBackend.Services.Interfaces;
 
 namespace TestBackend.Controllers
 {
@@ -11,104 +12,52 @@ namespace TestBackend.Controllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        public StudentsController(AppDbContext context)
+        private readonly IStudentsService _studentsService;
+
+        public StudentsController(IStudentsService studentsService)
         {
-            _context = context;
+            _studentsService = studentsService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<StudentsDTO>>> Get()
         {
-            var listDTO = new List<StudentsDTO>();
-            var listDB = await _context.Students.ToListAsync();
-
-            foreach (var item in listDB)
-            {
-
-                listDTO.Add(new StudentsDTO
-                {
-                    StudentId = item.StudentId,
-                    Name = item.Name,
-                    Surname = item.Surname,
-                    DocumentType = item.DocumentType,
-                    Passport = item.Passport,
-                    Email = item.Email,
-                    Phone = item.Phone
-                });
-            }
-
-            return Ok(listDTO);
+            var students = await _studentsService.GetAllAsync();
+            return Ok(students);
         }
 
-        [HttpGet("{StudentId}")]
-        public async Task<ActionResult<StudentsDTO>> Get(int StudentId)
+        [HttpGet("{studentId}")]
+        public async Task<ActionResult<StudentsDTO>> GetById(int studentId)
         {
-            var studentDTO = new StudentsDTO();
-            var studentDB = await _context.Students.FindAsync(StudentId);
+            var student = await _studentsService.GetByIdAsync(studentId);
+            if (student == null) return NotFound("Student not found");
 
-            if (studentDB is null) return NotFound("Student not found");
-
-            studentDTO.StudentId = StudentId;
-            studentDTO.Name = studentDB.Name;
-            studentDTO.Surname = studentDB.Surname;
-            studentDTO.DocumentType = studentDB.DocumentType;
-            studentDTO.Passport = studentDB.Passport;
-            studentDTO.Email = studentDB.Email;
-            studentDTO.Phone = studentDB.Phone;
-
-            return Ok(studentDTO);
+            return Ok(student);
         }
 
         [HttpPost]
-        public async Task<ActionResult<StudentsDTO>> Save(StudentsDTO studentDTO)
+        public async Task<ActionResult> Save(StudentsDTO studentDTO)
         {
+            var success = await _studentsService.CreateAsync(studentDTO);
+            if (!success) return BadRequest("Failed to save student");
 
-            var StudentDB = new Students
-            {
-                Name = studentDTO.Name,
-                Surname = studentDTO.Surname,
-                DocumentType = studentDTO.DocumentType,
-                Passport = studentDTO.Passport,
-                Email = studentDTO.Email,
-                Phone = studentDTO.Phone,
-            };
-
-            await _context.Students.AddAsync(StudentDB);
-            await _context.SaveChangesAsync();
-            return Ok("Save succes");
-
+            return Ok("Save success");
         }
 
         [HttpPut]
-        public async Task<ActionResult<StudentsDTO>> Update(StudentsDTO studentDTO)
+        public async Task<ActionResult> Update(StudentsDTO studentDTO)
         {
-            var studentDB = await _context.Students.Where(s => s.StudentId == studentDTO.StudentId).FirstAsync();
+            var success = await _studentsService.UpdateAsync(studentDTO);
+            if (!success) return NotFound("Student not found");
 
-            if(studentDB is null) return NotFound("Student not found");
-
-            studentDB.Name = studentDTO.Name;
-            studentDB.Surname = studentDTO.Surname;
-            studentDB.DocumentType = studentDTO.DocumentType;
-            studentDB.Passport = studentDTO.Passport;
-            studentDB.Email = studentDTO.Email;
-            studentDB.Phone = studentDTO.Phone;
-
-            _context.Students.Update(studentDB);
-            await _context.SaveChangesAsync();
-            return Ok("Edit succes");
-
+            return Ok("Edit success");
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<StudentsDTO>> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var studentDB = await _context.Students.FindAsync(id);
-
-            if (studentDB is null) return NotFound("Student not found");
-
-            _context.Students.Remove(studentDB);
-            await _context.SaveChangesAsync();
+            var success = await _studentsService.DeleteAsync(id);
+            if (!success) return NotFound("Student not found");
 
             return Ok("Student deleted");
         }

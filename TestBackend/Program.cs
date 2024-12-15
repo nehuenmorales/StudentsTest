@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TestBackend.Context;
+using TestBackend.Services.Interfaces;
+using TestBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddScoped<IStudentsService, StudentsService>();
 
 var app = builder.Build();
 
